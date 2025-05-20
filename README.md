@@ -16,4 +16,4 @@ In order so setup the development ecosystem correctly, follow the instructions a
 ### How to develop for the MPU
 1. Execute in terminal the following: `source activate_sdk_6.0.1.sh` in order to enter the development environment. This activates cross-compilation, IntelliSense etc.
 2. Projects should be placed in the `STM32MPU_Workspace/STM32MPU_Ecosystem_6.0.1/Developer-Package/stm32mp2-openstlinux-24.11.06/sources` directory.
-3. *(Optional)* If you are developing in VSCode, use the provide `.vscode/` folder which provides IntelliSense features, as well as activating the SDK inside VSCode.
+3. *(Optional)* If you are developing in VSCode, make sure to run VSCode from a terminal that has ran the `activate_sdk_6.0.1.sh` script, also use the provided `.vscode/` folder which provides IntelliSense features.
