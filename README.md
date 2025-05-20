@@ -1,7 +1,7 @@
 # Setup
 ***
 ### Start here!
-In order so setup the development ecosystem correctly, follow the instructions as seen below. Any deviation from the instructions could potentially render the use of the tools and/or processes impossible, requiring changes to scripts, paths and/or restructuring of the ecosystem's file system.<br>
+In order so setup the development ecosystem correctly, follow the instructions as seen below. Any deviation from the instructions could potentially render the use of the tools and/or processes impossible, requiring changes to scripts, paths and/or reconstruction of the ecosystem's file system.<br>
 
 ### Steps to follow
 1. Execute the `setup_workspace.sh` script in your **HOME** directory.
