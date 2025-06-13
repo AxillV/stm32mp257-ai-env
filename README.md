@@ -27,3 +27,4 @@ In order so setup the development ecosystem correctly, follow the instructions a
 1. Execute in terminal the following: `source activate_sdk_6.0.1.sh` in order to enter the development environment. This activates cross-compilation, IntelliSense etc.
 2. Projects should be placed in the `~/STM32MPU_Workspace/STM32MPU_Ecosystem_6.0.1/Developer-Package/stm32mp2-openstlinux-24.11.06/sources` directory when preparing for deployment, in order to comply with the ST working directory organization suggestions. However, you can also use this repository for ease of use.
 3. *(Optional)* If you are developing in VSCode, make sure to run VSCode from a terminal that has sourced the sdk (`source activate_sdk_6.0.1.sh`) script , also use the provided `.vscode/` folder which provides IntelliSense features.
+4. The `activate_sdk_6.0.1_sh` command, also adds the workspace folder to the path, which allows running the executable `stedgeai` from anywhere.
