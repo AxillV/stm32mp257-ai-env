@@ -17,7 +17,7 @@
             ],
             "cStandard": "gnu11",
             "cppStandard": "gnu++17",
-            "intelliSenseMode": "linux-gcc-aarch64"
+            "intelliSenseMode": "linux-gcc-arm64"
         }
     ],
     "version": 4
