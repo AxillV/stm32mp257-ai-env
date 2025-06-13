@@ -1,0 +1,80 @@
+Χρήσιμα Link
+- Directory Structure [https://wiki.st.com/stm32mpu/wiki/Example_of_directory_structure_for_Packages]
+- Software Packages απαραίτητα για το development [https://wiki.st.com/stm32mpu/wiki/Which_STM32MPU_Embedded_Software_Package_better_suits_your_needs]
+- Αντίστοιχα Software Package για το X-LINUX-AI package [https://wiki.st.com/stm32mpu/wiki/X-LINUX-AI_OpenSTLinux_Expansion_Package#X-LINUX-AI_package]
+- Εργαλείο για την μετατροπή μοντέλων ΜΜ για χρήση σε STM32 [https://wiki.st.com/stm32mpu/wiki/ST_Edge_AI:_Guide_for_MPU]
+- Παραδείγματα μοντέλων χρησιμοποιώντας το X-LINUX-AI [https://github.com/STMicroelectronics/meta-st-x-linux-ai/tree/v6.0.0] και [https://wiki.st.com/stm32mpu/wiki/Category:AI_-_Application_examples]
+- Το AI API, το οποίο χρησιμοποιείται για το abstraction κατά τη χρήση διαφορετικών framework μοντέλων [https://wiki.st.com/stm32mpu/wiki/STAI_MPU:_AI_unified_API_for_STM32MPUs]
+- Python API Reference & Inference [https://wiki.stmicroelectronics.cn/stm32mpu/wiki/STAI_MPU_Python_Reference]
+
+Setup:
+Σημείωση για παρακάτω: η έκδοση 6.0.1 του AI Package παρέχει βελτιώσεις για την διαφοροποίηση μεταξύ board με και χωρίς NPU.
+(Χρησιμοποίησα την έκδοση 6.0.0 του sdk, πρέπει όλα τα software package να είναι compatible μεταξύ τους λόγω της αλληλοεξάρτησης τους.)
+- Εγκατάσταση των εργαλείων Cube{IDE, Programmer, MX}
+- Εγκατάσταση των software package για τα sdk/base images, ακολουθώντας κατά προτίμηση το directory structure που προτείνεται (Το AI Starter Package προστίθεται από την κονσόλα του MPU) https://wiki.st.com/stm32mpu/wiki/X-LINUX-AI_Starter_package#Install_X-LINUX-AI_demonstration_packages)
+- Clone των example project για ai από το αντίστοιχο repo.
+- Εγκατάσταση του STEdgeAI-Core εργαλείου για επεξεργασία και μετατροπή μοντέλων.
+
+Technical Details:
+- The component STM32MP2 of ST Edge AI is available only for Linux
+- Models can either be generated offline on the host computer (ST Edge AI Core) or directly benchmarked on an STM32 platform with the NBG model being generated automatically, given an NPU is present.
+- Network Binary Graph (NBG) models are the only type of model that is able to be executed on GPU/NPU.
+- TFlite and ONNX can only be run on CPU, unless they are 8-bit quantized, which can then be run on GPU/NPU via TFLite VX Delegate or ONNX Execution provider, respectively.
+- TFlite and ONNX models can be converted into NBG format with the ST Edge tool.
+- TensorFlow and Keras can be first converted to TFLite format.
+- PyTorch and Ultralitics Yolo can be converted to either TFLite or ONNX.
+- In order to convert a model into NBG format, the model has to first be quantized.
+- It is recommended to quantize the model, even in the case of CPU execution:
+    8-bits per-tensor is recommended, with the majority of layers being executed on the NPU.
+    8-bits per-channel the opposite is true, with majority of the layers being executed on the GPU, performance may vary.
+    float-16 the above is true, but it is not recommended to be used on hardware-accelerated STM32MP2x boards.
+    float-32 can only be ran on CPU.
+- Custom post-processing layers eg. from TFLite is not supported. The post process function can either be added inside the application or, the post-processing can be split into a separate TFLite/ONNX model which is then ran on CPU.
+-Validation of converted NBG model requires the STM32 platform.
+
+Technical Details Sources:
+https://wiki.st.com/stm32mpu/wiki/X-LINUX-AI_OpenSTLinux_Expansion_Package
+https://wiki.st.com/stm32mpu/wiki/ST_Edge_AI:_Guide_for_MPU
+https://wiki.st.com/stm32mpu/wiki/How_to_deploy_your_NN_model_on_STM32MPU
+https://wiki.st.com/stm32mpu/wiki/How_to_use_hardware_acceleration_with_TensorFlow_Lite_and_ONNX_Runtime_frameworks
+
+TODO:
+- Test various YOLOv5 models
+- Check for pre/post-processing
+- Test on which format to export the model to
+- Create pipeline for conversion
+
+./stedgeai/stedgeai generate -m stedgeai_testing/ --target stm32mp25 --output stedgeai_testing/
+./stedgeai generate -m ~/Documents/Irida/stedgeai_testing/ --target stm32mp25 --output ~/Documents/Irida/stedgeai_testing/
+
+Potential Pipeline:
+1. Grab initial model
+2. Convert to TFLite/ONNX if applicable
+3. Take care of pre/post-processing?
+4. Quantize
+5. Pass through STEdgeAI, generate and validate
+
+γενικα σκεψου οτι οταν ερθει θα θελουμε να αλλαξουμε το μοντελο και να δουμε οτι δουλευει οποτε τσεκαρε πως θα γινει αυτη η διαδικασια
+
+δηλαδη που οριζεις παραμετρους input output, post kai preprocessing τι καμερα παιρνει με τι input size
+
+επισης δες και την αρχιτεκτονικη του board
+
+τι μνημες εχει, πως λειτουργει το camera pipeline, πως κανεις allocation σε καθε μνημη (πχ αν εχει συγκεκριμενη μνημη για npu) κλπ
+
+ssd_mobilenet_pp:
+nn_postproc seems like the meat of the deal, need to define behaviour based on model type
+
+stai_mpu_wrapper:
+will require on RunInference, if at all
+
+main file:
+load_valid_results_from_json_file loading of models
+also setup in main
+
+infering from random photos in a directory is built-in
+
+ngb renames tensors
+ngb requires manual memory management
+https://wiki.st.com/stm32mpu/wiki/How_to_run_inference_using_the_STAI_MPU_Cpp_API#Write_a_simple_NN_inference_C-2B--program
+^ how to figure out behaviour of model
